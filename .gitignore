@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+__MACOSX/
+
+# Python
+__pycache__/
+*.pyc
+
+# Windows
+Thumbs.db
+
+# 本地生成物（不入库）
+*.zip
+*.skill
+
+# 本机历史标识符映射（含个人历史值，不入库）
+scripts/legacy_ids.json
