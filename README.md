@@ -33,6 +33,19 @@
 | 🏆 排行榜 | 今日/昨日/本月积分排行 |
 | 🎁 抽卡奖励 | 积分兑奖、图鉴收集、保底机制 |
 
+## 安装（挑最省事的一条）
+
+| 途径 | 适合谁 | 怎么做 |
+|---|---|---|
+| 🌐 **网页版生成器**（零安装） | 不想装任何东西的老师 | 打开 **[在线版](https://seahp.github.io/class-management-workbench/)** 或双击本仓库 `docs/index.html` → 填班级名/名单/组数 → 点生成 → 下载成品。**全程浏览器内完成** |
+| 📄 **空白班文件**（最省事） | 只想马上能用的老师 | 下载 [`examples/班级小助手-通用版.html`](examples/班级小助手-通用版.html) → 双击打开 → ⚙ 设置 → ③ 贴自己班名单 |
+| 🤖 **AI 助手生成** | 有 AI 助手的老师 | `skillhub install class-management-workbench --namespace user_1db801dd` · [技能页](https://skillhub.cn/skills/class-management-workbench) → 对 AI 说"给三年级二班做个班级小助手" |
+| 🧑‍💻 **源码 / 二次开发** | 开发者 | `git clone https://github.com/seahp/class-management-workbench.git`，用 `scripts/customize.py` 生成 |
+
+> 四条路产出的文件完全一样（网页版与脚本版输出**逐字节一致**，有自动化验证保障）。
+
+**遇到问题？** 程序右上角 **❓** 有 12 条大白话问答；完整版见 [`references/faq-for-teachers.md`](references/faq-for-teachers.md)。
+
 ## 快速开始
 
 ### 方式一：直接体验（无需任何工具）
@@ -92,6 +105,7 @@ AI 会自动完成名单整理、生成、验证全流程。
 ## 目录结构
 
 ```
+├── docs/index.html           # 网页版生成器（GitHub Pages 源）
 ├── SKILL.md                  # AI 技能说明（含完整使用/定制指引）
 ├── scripts/
 │   ├── customize.py          # 一键定制：班级名 / 名单 / 组数 / 课表 → 生成 HTML
@@ -105,6 +119,7 @@ AI 会自动完成名单整理、生成、验证全流程。
 
 ## 更新日志
 
+- **v2.2.0** — 更好上手：新增**网页版生成器**（零安装）与**空白班文件**；程序内置 **❓ 遇到问题**问答面板；修复课表换季会重置自定义课表、写回权限失败无法自助恢复
 - **v2.1.1** — 修复：生成的文件页头一直显示默认班名（现在生成时替换 + 启动时按存档同步）
 - **v2.1.0** — 修复：课表 Markdown 表格导入失败；抽卡三个按钮未绑定；高积分学生抽卡报错
 - **v2.0.0** — 动物头像等级系统（12 种水彩小动物、星星升级、Lv 无上限）、3480px 大屏 1.8 倍适配

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>班级小助手 · 网页版生成器（不用装任何软件）</title>
+<style>
+  :root{--paper:#FFFDF7;--ink:#2c2c2a;--line:#d9d2c7;--accent:#f6a835;--muted:#7a746a;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+    line-height:1.75;font-size:16px;}
+  .wrap{max-width:720px;margin:0 auto;padding:28px 18px 80px;}
+  header{text-align:center;margin-bottom:22px;}
+  h1{font-size:26px;margin:0 0 6px;}
+  .sub{color:var(--muted);font-size:14.5px;}
+  .card{background:#fff;border:2px solid var(--line);border-radius:16px;
+    padding:16px 18px;margin:14px 0;box-shadow:3px 3px 0 rgba(0,0,0,.04);}
+  .card h2{font-size:16.5px;margin:0 0 10px;display:flex;align-items:center;gap:8px;}
+  .card h2 .n{display:inline-flex;width:24px;height:24px;border-radius:50%;
+    background:var(--accent);color:#fff;align-items:center;justify-content:center;
+    font-size:13.5px;font-weight:bold;flex:0 0 auto;}
+  .card h2 .opt{font-size:12.5px;color:var(--muted);font-weight:normal;margin-left:2px;}
+  input[type=text],textarea,select{width:100%;font-family:inherit;font-size:15.5px;color:var(--ink);
+    background:#fffdf7;border:2px solid var(--line);border-radius:10px;padding:9px 11px;outline:none;}
+  input[type=text]:focus,textarea:focus,select:focus{border-color:var(--accent);}
+  textarea{min-height:132px;resize:vertical;line-height:1.7;}
+  input[type=text]{height:42px;}
+  .hint{font-size:13px;color:var(--muted);margin-top:7px;line-height:1.65;}
+  .hint b{color:var(--ink);}
+  .cols-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+  .cols-row select{width:110px;}
+  details{border-top:1px dashed var(--line);margin-top:6px;padding-top:4px;}
+  details summary{cursor:pointer;font-size:14.5px;color:var(--muted);padding:6px 0;list-style:none;}
+  details summary::-webkit-details-marker{display:none;}
+  details summary::before{content:'▸ ';}
+  details[open] summary::before{content:'▾ ';}
+  .gen{display:block;width:100%;margin:20px 0 8px;height:56px;border:none;border-radius:999px;
+    background:var(--accent);color:#fff;font-size:19px;font-weight:bold;font-family:inherit;
+    cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .08s;}
+  .gen:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.12);}
+  .gen:disabled{opacity:.6;cursor:default;}
+  #result{display:none;}
+  .ok-card{background:#f0faf2;border-color:#9ed3ac;}
+  .ok-card h2{color:#1d7a3f;}
+  .dl{display:block;width:100%;margin:12px 0 6px;height:54px;border-radius:999px;border:3px solid #1d7a3f;
+    background:#fff;color:#1d7a3f;font-size:18px;font-weight:bold;font-family:inherit;cursor:pointer;}
+  .dl:hover{background:#1d7a3f;color:#fff;}
+  .sum{font-size:14px;color:#3f6b4c;background:#fff;border-radius:10px;padding:10px 13px;margin-top:8px;line-height:1.8;}
+  .sum b{color:#173404;}
+  .steps{margin-top:14px;background:#fff;border:1px solid #cfe6d6;border-radius:10px;padding:10px 14px;font-size:13.5px;line-height:1.85;}
+  .err{display:none;background:#fdeaea;border-color:#e0533c;color:#a32d2d;}
+  .err h2{color:#a32d2d;}
+  footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:26px;line-height:2;}
+  code{background:#f1efe8;border-radius:5px;padding:1px 6px;font-size:.92em;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🏫 班级小助手 · 网页版生成器</h1>
+    <div class="sub">填一填，点生成，下载就是一个能直接用的班级管理网页 —— 不用装任何软件</div>
+  </header>
+
+  <div class="card">
+    <h2><span class="n">1</span>班级名称</h2>
+    <input type="text" id="cls" placeholder="如：三年级二班" maxlength="20">
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>学生名单 <span class="opt">留空也行</span></h2>
+    <textarea id="names" placeholder="每行一个，可带性别：&#10;张明 男&#10;李红 女&#10;王芳&#10;&#10;也可以直接从 Excel / 班级群 复制粘贴整列名单"></textarea>
+    <div class="hint">支持：<b>一行一个</b> ／ <b>「姓名 男」</b> ／ 表格粘贴（含"姓名、性别"列）／ 逗号分隔。<br>留空时用「学生01…学生40」占位，之后在程序里 ⚙ 设置 → ③ 学生名单 里替换。</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>分成几个组？</h2>
+    <div class="cols-row">
+      <select id="cols">
+        <option value="4">4 组</option>
+        <option value="5">5 组</option>
+        <option value="6" selected>6 组</option>
+        <option value="7">7 组</option>
+        <option value="8">8 组</option>
+      </select>
+      <span class="hint">小组数 = 座位列数（竞赛、积分都按它分组）</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>课表 <span class="opt">可跳过</span></h2>
+    <details>
+      <summary>有电子版课表就贴进来（没有就跳过，之后在程序里改）</summary>
+      <textarea id="sched" placeholder="周一|语文/数学/英语/美术/音乐&#10;周二|数学/语文/体育/美术/信息&#10;周三|语文/数学/科学/音乐/体育"></textarea>
+      <div class="hint">格式：<b>周几 | 第一节/第二节/…</b>（用「/」隔开，最多 12 节）。学校课表是表格的话，一行一行照着抄即可。</div>
+    </details>
+  </div>
+
+  <button class="gen" id="gen">✨ 生成我的班级小助手</button>
+
+  <div class="card err" id="errCard">
+    <h2>⚠️ 生成失败</h2>
+    <div id="errMsg"></div>
+  </div>
+
+  <div class="card ok-card" id="result">
+    <h2>✅ 生成好了！</h2>
+    <div class="sum" id="sum"></div>
+    <button class="dl" id="dl">⬇️ 下载「班级小助手」网页</button>
+    <div class="steps">
+      <b>下载后三步走：</b><br>
+      1. 把下载的文件放到一个固定文件夹（如 D 盘的文件夹，别放 U 盘随手抽走）<br>
+      2. <b>双击打开</b>（用 Microsoft Edge 或 Chrome 打开最好）<br>
+      3. 首次打开点一次 <b>⚙ 设置 → ④ 数据保存与找回 → 🔗 绑定程序文件</b>，数据就会自动写进这个文件，之后每天双击它，数据自动回来
+    </div>
+  </div>
+
+  <footer>
+    班级小助手 · 网页版生成器 ｜ 全程在你自己的电脑里生成，不上传任何信息<br>
+    打开这个网页不需要联网也能用（若已下载到本地）
+  </footer>
+</div>
+
+<script id="tplb64" type="text/plain">__TEMPLATE_BASE64__</script>
+<script>
+(function(){
+  'use strict';
+
+  /* ---------- 模板解码 ---------- */
+  var _tplCache=null;
+  function decodeTemplate(){
+    if(_tplCache) return _tplCache;
+    var b64=(document.getElementById('tplb64').textContent||'').replace(/\s+/g,'');
+    var bin=atob(b64);
+    var bytes=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    _tplCache=new TextDecoder('utf-8').decode(bytes);
+    return _tplCache;
+  }
+
+  /* ---------- 名单解析（与脚本版同一套规则） ---------- */
+  var HEAD=('姓名|名字|学生|序号|编号|学号|班级|性别|男女|男生|女生').split('|');
+  function isHead(x){ return HEAD.indexOf(x)>=0; }
+  function parseNames(text){
+    var out=[];
+    String(text||'').split(/[\n,，;；、]+/).forEach(function(raw){
+      var line=String(raw||'').trim().replace(/^\|+|\|+$/g,'').trim();
+      if(!line) return;
+      var parts=line.replace(/\t/g,' ').split('|').map(function(x){return x.trim();}).filter(function(x){return x;});
+      if(!parts.length) return;
+      var name=null, gender='';
+      var hasG=function(s){ return /男|女/.test(s); };
+      if(parts.length>=2 && parts[1] && !hasG(parts[1])){
+        name=parts[1];
+        if(parts.length>=3 && parts[2]) gender=/男/.test(parts[2])?'M':(/女/.test(parts[2])?'F':'');
+      } else if(parts.length>=3){
+        name=parts[1];
+        gender=/男/.test(parts[2])?'M':(/女/.test(parts[2])?'F':'');
+      } else {
+        var seg=parts[0];
+        var m=seg.match(/^(.*?)\s*([男女])$/);
+        if(m){ name=m[1].trim(); gender=(m[2]==='男')?'M':'F'; }
+        else{ name=seg; }
+      }
+      if(name && !isHead(name)) out.push([name,gender]);
+    });
+    return out;
+  }
+
+  /* ---------- 课表解析：周一|语文/数学/… ---------- */
+  var DAYS=['周一','周二','周三','周四','周五','周六','周日'];
+  function parseSched(text){
+    var out={}, any=false;
+    String(text||'').split(/\r?\n/).forEach(function(ln){
+      ln=ln.trim(); if(!ln) return;
+      var d=null;
+      for(var i=0;i<DAYS.length;i++){ if(ln.indexOf(DAYS[i])===0){ d=DAYS[i]; break; } }
+      if(!d) return;
+      var rest=ln.slice(d.length).replace(/^[|:：,，\s]+/,'');
+      if(!rest) return;
+      var arr=rest.indexOf('/')>=0 ? rest.split('/') : rest.split(/[,，、\s]+/);
+      arr=arr.map(function(x){return x.trim();}).filter(function(x){return x;}).slice(0,12);
+      while(arr.length<12) arr.push('—');
+      out[d]=arr; any=true;
+    });
+    return any?out:null;
+  }
+
+  /* ---------- 生成 ---------- */
+  function jsStr(x){ return '"'+String(x).replace(/\\/g,'\\\\').replace(/"/g,'\\"')+'"'; }
+
+  function buildHTML(opt){
+    var s=decodeTemplate();
+    var cls=String(opt.className||'一年级一班').trim()||'一年级一班';
+    var roster=opt.roster&&opt.roster.length?opt.roster:[];
+    var cols=parseInt(opt.cols,10)||6;
+    if(cols<4||cols>8) cols=6;
+
+    // ① 班级名（JS 默认值 + 页头静态文字）
+    var k1="className: '一年级一班'";
+    if(s.indexOf(k1)<0) throw new Error('模板缺少班级名占位');
+    s=s.replace(k1, "className: '"+cls.replace(/'/g,"\\'")+"'");
+    var k2='id="className" contenteditable="true">一年级一班<';
+    if(s.indexOf(k2)<0) throw new Error('模板缺少页头班级名占位');
+    s=s.replace(k2, 'id="className" contenteditable="true">'
+      +cls.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'<');
+
+    // ② 名单 + 性别
+    if(!roster.length){ roster=[]; for(var i=0;i<40;i++) roster.push(['学生'+('0'+(i+1)).slice(-2),'']); }
+    var namesJs='['+roster.map(function(r){return jsStr(r[0]);}).join(',')+']';
+    var nk='const STUDENT_NAMES = ';
+    var i0=s.indexOf(nk);
+    if(i0<0) throw new Error('模板缺少名单占位');
+    var i1=s.indexOf('];', i0);
+    if(i1<0) throw new Error('模板名单格式异常');
+    var oldSeg=s.slice(i0, i1+2);
+    var gendersJs='['+roster.map(function(r){return jsStr(r[1]||'');}).join(',')+']';
+    s=s.replace(oldSeg, nk+namesJs+';'
+      +'\nconst STUDENT_GENDERS = '+gendersJs+';   // 与 STUDENT_NAMES 一一对应（M 男 / F 女 / 空）');
+    var og="const students = STUDENT_NAMES.map((nm,i)=>({id:i, name:nm, score:0, gender:''}));";
+    var ng="const students = STUDENT_NAMES.map((nm,i)=>({id:i, name:nm, score:0, "
+      +"gender:((typeof STUDENT_GENDERS!=='undefined' && STUDENT_GENDERS[i])||'')}));";
+    if(s.indexOf(og)>=0) s=s.replace(og, ng);
+
+    // ③ 小组数
+    if(s.indexOf('let COLS = 6;')>=0) s=s.replace('let COLS = 6;', 'let COLS = '+cols+';');
+    var ms=s.match(/seatCols:\s*\d+/);
+    if(ms) s=s.replace(ms[0], 'seatCols:'+cols);
+
+    // ④ 课表（可选）
+    if(opt.schedule && Object.keys(opt.schedule).length){
+      var lines=[];
+      DAYS.forEach(function(d){
+        if(opt.schedule[d]){
+          var arr=opt.schedule[d].slice(0,12);
+          while(arr.length<12) arr.push('—');          /* 防御：不足 12 节补齐，与脚本版一致 */
+          lines.push("  '"+d+"':["+arr.map(function(x){
+            return "'"+String(x).replace(/'/g,"\\'")+"'"; }).join(',')+"]");
+        }
+      });
+      var newSched='const DEFAULT_V3_SCHED = {\n'+lines.join(',\n')+'\n};';
+      var m2=s.match(/const DEFAULT_V3_SCHED = \{[\s\S]*?\n\};/);
+      if(m2) s=s.replace(m2[0], newSched);
+    }
+    return {html:s, roster:roster, cols:cols, className:cls};
+  }
+
+  function safeName(x){
+    return String(x||'班级').replace(/[\\/:*?"<>|\s]+/g,'').slice(0,20)||'班级';
+  }
+
+  /* ---------- 界面 ---------- */
+  var lastBlob=null, lastName='';
+  var $=function(id){ return document.getElementById(id); };
+  function showErr(msg){
+    $('errMsg').textContent=msg;
+    $('errCard').style.display='block';
+    $('result').style.display='none';
+  }
+
+  $('gen').addEventListener('click', function(){
+    var btn=this;
+    btn.disabled=true; btn.textContent='⏳ 正在生成…';
+    $('errCard').style.display='none';
+    setTimeout(function(){
+      try{
+        var cls=$('cls').value.trim()||'一年级一班';
+        var roster=parseNames($('names').value);
+        var cols=$('cols').value;
+        var sched=parseSched($('sched').value);
+        var r=buildHTML({className:cls, roster:roster, cols:cols, schedule:sched});
+        lastBlob=new Blob([r.html],{type:'text/html;charset=utf-8'});
+        lastName=safeName(r.className)+'-班级小助手.html';
+        var mb=String(r.roster.length);
+        var nf=r.roster.filter(function(x){return x[1]==='F';}).length;
+        var nm=r.roster.filter(function(x){return x[1]==='M';}).length;
+        var gtxt=(nm||nf)?('（男 '+nm+' · 女 '+nf+(r.roster.length-nm-nf?(' · 未标性别 '+(r.roster.length-nm-nf)):'' )+'）'):'（未标性别，可在程序里补）';
+        $('sum').innerHTML='班级：<b>'+r.className.replace(/[<>&]/g,'')+'</b><br>'
+          +'学生：<b>'+mb+' 人</b> '+gtxt+'<br>'
+          +'小组：<b>'+r.cols+' 组</b><br>'
+          +'课表：'+(sched?('<b>已写入 '+Object.keys(sched).length+' 天</b>'):'用默认课表（可之后在程序里改）')+'<br>'
+          +'文件：<b>'+lastName+'</b>（约 '+(lastBlob.size/1024).toFixed(0)+' KB）';
+        $('result').style.display='block';
+        $('dl').textContent='⬇️ 下载「'+lastName+'」';
+        $('result').scrollIntoView({behavior:'smooth',block:'nearest'});
+      }catch(e){
+        showErr('生成时出了点问题：'+(e&&e.message||e)+'。请刷新网页重试。');
+      }finally{
+        btn.disabled=false; btn.textContent='✨ 生成我的班级小助手';
+      }
+    },30);
+  });
+
+  $('dl').addEventListener('click', function(){
+    if(!lastBlob) return;
+    var url=URL.createObjectURL(lastBlob);
+    var a=document.createElement('a');
+    a.href=url; a.download=lastName; document.body.appendChild(a); a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },4000);
+  });
+
+  /* 测试探针：供自动化验证调用 */
+  window.__GEN_BUILD__=function(opt){ return buildHTML(opt); };
+  window.__GEN_PARSE__=function(t){ return parseNames(t); };
+})();
+</script>
+</body>
+</html>
