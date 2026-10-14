@@ -62,12 +62,25 @@ function trText(raw){
   if(!core) return raw;
   var en=I18N_DICT[core];
   if(en!==undefined) return lead+en+tail;
-  /* 模板规则（仅用于非纯中文标识的短句） */
+  /* 模板规则：支持 $1..$9（捕获组）与 $D1..$D9（捕获组再过一遍字典，用于「第1节 · 数学」→ Period 1 · Math） */
   for(var i=0;i<I18N_PAT.length;i++){
     var re=new RegExp(I18N_PAT[i][0]);
-    if(re.test(core)) return lead+core.replace(re, I18N_PAT[i][1])+tail;
+    if(re.test(core)) return lead+patApply(core, re, I18N_PAT[i][1])+tail;
   }
   return raw;
+}
+/* 应用一条模板规则：先生成 $Dn 的字典结果，再展开 $n */
+function patApply(str, re, repl){
+  try{
+    return str.replace(re, function(){
+      var a=arguments;
+      var r=repl.replace(/\$D(\d)/g, function(_, n){
+        var raw=String(a[+n]==null?'':a[+n]).trim();
+        return I18N_DICT[raw]!==undefined ? I18N_DICT[raw] : raw;
+      });
+      return r.replace(/\$(\d)/g, function(_, n){ return a[+n]==null?'':a[+n]; });
+    });
+  }catch(e){ return str; }
 }
 function trMsg(s){
   if(curLang()!=='en') return s;
@@ -77,7 +90,7 @@ function trMsg(s){
   if(exact!==undefined) return k.replace(k.trim(), exact);
   for(var i=0;i<I18N_PAT.length;i++){
     var re=new RegExp(I18N_PAT[i][0]);
-    if(re.test(k)) return k.replace(re, I18N_PAT[i][1]);
+    if(re.test(k)) return patApply(k, re, I18N_PAT[i][1]);
   }
   return k;
 }
@@ -240,7 +253,8 @@ def main():
         sys.exit('该文件已经注入过语言功能（发现 applyLang）。请从未注入的版本重跑。')
 
     dic = json.loads(io.open(args.dict, encoding='utf-8').read()) if os.path.isfile(args.dict) else {}
-    items = {k: v for k, v in dic.items() if not k.startswith('_') and len(k) >= 2}
+    # 注意：允许单字符键（如颜色字「橙」→Orange），$Dn 嵌套翻译要用到
+    items = {k: v for k, v in dic.items() if not k.startswith('_') and len(k) >= 1}
     pats = json.loads(io.open(args.pat, encoding='utf-8').read()) if os.path.isfile(args.pat) else []
     pats = [x for x in pats if isinstance(x, list) and len(x) == 2]
     # ⚠️ Python 的 re.sub 用 \1 引用捕获组，而 JS 的 String.replace 用的是 $1。
