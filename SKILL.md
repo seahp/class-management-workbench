@@ -2,16 +2,17 @@
 name: class-management-workbench
 slug: class-management-workbench
 displayName: 班级管理工作台生成器
-summary: 一键生成班主任专用单文件离线工作台：座位表、积分榜、小组竞赛、值日、课表、作业、古诗、口算、单词卡、抽卡共 12 个模块，适配教室触摸大屏；界面支持中英文切换
-tags: [班级管理, 班主任, 座位表, 积分, 值日, 课表, 教室大屏, 教师工具, 单文件HTML, 离线]
+display_name: 班级管理工作台生成器
 display_name_en: Classroom Management Workbench Generator
+summary: 一键生成班主任专用单文件离线工作台：座位表、积分榜、小组竞赛、值日、课表、作业、古诗、口算、单词卡、抽卡共 12 个模块，适配教室触摸大屏；界面支持中英文切换
+tags: [班级管理, 班主任, 座位表, 积分, 值日, 课表, 教室大屏, 教师工具, 单文件HTML, 离线, 双语]
 description: 为中小学班主任生成一套「班级管理工作台」单文件离线 HTML——含座位表、积分榜、小组竞赛、值日、课表、作业、古诗诵读、口算/竖式/脱式练习、英语单词记忆、随机点名与倒计时、排行榜、抽卡共 12 个模块，适配教室触摸大屏（希沃一体机等）。当用户说「做个班级小助手 / 班级管理工具 / 班级工作台」「给我班做一个座位表+积分+值日的工具」「要一个能排座位、加分、倒计时的网页」，或需要为某个具体班级（如「三年级二班 38 人」）定制班级管理页面时使用；也适用于在已有的班级小助手 HTML 上迭代修改功能。
 description_zh: 面向中小学班主任：三条路都能拿到一份双击即用的单文件离线班级管理工作台（座位、积分、竞赛、值日、课表、作业、诵读、计算、单词、工具、排行、抽卡共 12 模块）——① 让 AI 按班级信息直接生成；② 老师自己在「网页版生成器」填三步生成（零安装）；③ 直接用「空白班」文件在设置里贴名单。内置动物头像等级系统与 3480px 教室大屏适配；程序内含「❓遇到问题」通俗问答，并教老师用「绑定程序文件」防止教室还原卡清数据。
-description_en: For primary and secondary homeroom teachers, generate a ready-to-use single-file offline classroom management workbench (seating chart, points, group competition, duty roster, timetable, homework, poetry recitation, math drills, English vocabulary, random picker & countdown, leaderboard, reward cards, plus a v2.0 animal-avatar level system with 12 hand-drawn watercolor pets, star-to-level-up progression with unlimited Lv, and unified 1.8x big-screen scaling for 3480px touch displays) from a few class details, verify it in a real browser, deliver it, and teach the file-binding trick that survives classroom restore cards.
+description_en: For primary and secondary homeroom teachers, generate a ready-to-use single-file offline classroom management workbench (seating chart, points, group competition, duty roster, timetable, homework, poetry recitation, math drills, English vocabulary, random picker and countdown, leaderboard, reward cards, plus a v2.0 animal-avatar level system with 12 hand-drawn watercolor pets, star-to-level-up progression with unlimited Lv, and unified 1.8x big-screen scaling for 3480px touch displays) from a few class details, verify it in a real browser, deliver it, and teach the file-binding trick that survives classroom restore cards.
+category: education
 version: 2.3.1
 homepage: https://github.com/seahp/class-management-workbench
 author: 粉笔与代码
-agent_created: true
 ---
 
 # 教师班级管理工作台
@@ -30,8 +31,8 @@ agent_created: true
 | 用法 | 适合 | 怎么做 |
 |---|---|---|
 | **① AI 生成**（本技能主路径） | 老师身边有 AI 助手 | 老师报班级信息 → 你跑 `scripts/customize.py` 生成 → 交付前按 `references/verification.md` 验证 |
-| **② 网页版生成器**（零安装） | 老师自己弄、不想碰命令行 | 打开 `templates/web-generator.html`（或在线版），填班级名/名单/组数/课表 → 点生成 → 下载成品。**纯浏览器内完成，离线也能用** |
-| **③ 空白班文件**（最省事） | 老师连生成都不想点 | 直接给 `templates/ready-to-use-workbench.html`，双击打开 → ⚙ 设置 → ③ 贴自己班名单 → 完事 |
+| **② 网页版生成器**（零安装） | 老师自己弄、不想碰命令行 | 打开 `templates/web-generator.html`（或在线版），填班级名/名单/组数/课表 → 点生成 → 下载成品。**纯浏览器内完成，离线也能用**。若包内没有此文件：`python3 scripts/build_web_generator.py` 现场构建（需先有模板） |
+| **③ 空白班文件**（最省事） | 老师连生成都不想点 | 直接给 `templates/ready-to-use-workbench.html`，双击打开 → ⚙ 设置 → ③ 贴自己班名单 → 完事。若包内没有此文件：`python3 scripts/customize.py --class-name "一年级一班" --count 40 --out ready-to-use-workbench.html` 现场生成 |
 
 > ⚠️ **遇到不懂命令行的老师，不要让他去装 Python、敲命令** —— 直接推 ② 或 ③。
 > 判断口诀：老师愿意发名单给你 → 用 ①；老师要自己动手 → 用 ②；老师只想马上能用 → 用 ③。
@@ -186,8 +187,8 @@ localStorage KEY、IndexedDB 名、内嵌数据全局变量、数据脚本 id �
 
 ## 资源
 
-- `templates/web-generator.html` — **网页版生成器**（含内嵌模板，双击即用；由 `scripts/build_web_generator.py` 从模板构建）
-- `templates/ready-to-use-workbench.html` — **空白班**现成文件（40 个占位名，老师贴名单即用）
+- `templates/web-generator.html` — **网页版生成器**（含内嵌模板，双击即用；由 `scripts/build_web_generator.py` 从模板构建；★ 若包内未随附，跑该脚本即可现场生成，功能完全等价）
+- `templates/ready-to-use-workbench.html` — **空白班**现成文件（40 个占位名，老师贴名单即用；★ 若包内未随附，用 `scripts/customize.py --count 40` 现场生成，功能完全等价）
 - `references/faq-for-teachers.md` — 给老师的通俗问答（与程序内 ❓ 面板同源）
 - `scripts/i18n-en.json` + `scripts/i18n-en-patterns.json` — **界面英文字典**（946 条精确匹配 + 94 条模板规则）
 - `scripts/add_i18n.py` — 把中英文切换注入程序（构建链的一环，改完主程序后按顺序跑：build_template → build_web_generator → customize）
