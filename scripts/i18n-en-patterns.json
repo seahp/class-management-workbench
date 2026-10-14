@@ -1,0 +1,358 @@
+[
+ [
+  "^已保存到方案(.*)$",
+  "Saved to plan \\1"
+ ],
+ [
+  "^已切换到(.*)$",
+  "Switched to \\1"
+ ],
+ [
+  "^已切到「(.*)」$",
+  "Switched to \\1"
+ ],
+ [
+  "^已导入「(.*)」$",
+  "Imported \""
+ ],
+ [
+  "^已导入 (.+)$",
+  "Imported \\1"
+ ],
+ [
+  "^已导出「(.+)$",
+  "Exported \\1"
+ ],
+ [
+  "^已导出 (.+)$",
+  "Exported \\1"
+ ],
+ [
+  "^已保存 (.*)$",
+  "Saved \\1"
+ ],
+ [
+  "^已添加任务：(.+)$",
+  "Task added: \\1"
+ ],
+ [
+  "^已添加岗位：(.+)$",
+  "Position added: \\1"
+ ],
+ [
+  "^已添加卡片：(.+)$",
+  "Card added: \\1"
+ ],
+ [
+  "^已删除卡片：(.+)$",
+  "Card deleted: \\1"
+ ],
+ [
+  "^已新增班级岗：(.+)$",
+  "Class post added: \\1"
+ ],
+ [
+  "^已改名：(.+)$",
+  "Renamed: \\1"
+ ],
+ [
+  "^已指派 (.*)$",
+  "Assigned \\1"
+ ],
+ [
+  "^已认领 (.+)$",
+  "Assigned \\1"
+ ],
+ [
+  "^已设为 (.*)$",
+  "Set to \\1"
+ ],
+ [
+  "^已应用主色 (.+)$",
+  "Accent color set to \\1"
+ ],
+ [
+  "^主色已设为 (.+)$",
+  "Accent color set to \\1"
+ ],
+ [
+  "^已撤销「(.+)$",
+  "Undid \\1"
+ ],
+ [
+  "^已清零（(.+)$",
+  "Cleared (\\1"
+ ],
+ [
+  "^当前就是(.+)$",
+  "Currently on \\1"
+ ],
+ [
+  "^当前已是 (.*)$",
+  "Already \\1"
+ ],
+ [
+  "^当前座位就是方案(.*)$",
+  "Current seats match plan \\1"
+ ],
+ [
+  "^改为 (.*)$",
+  "Changed to \\1"
+ ],
+ [
+  "^给任务「(.+)$",
+  "Task \""
+ ],
+ [
+  "^轮换方式：(.*)$",
+  "Rotation method: \\1"
+ ],
+ [
+  "^积分默认排列已改为：(.*)$",
+  "Default points layout: \\1"
+ ],
+ [
+  "^自动保存间隔已改为每 (.*)$",
+  "Auto-save interval: every \\1"
+ ],
+ [
+  "^已填入 (.*)$",
+  "Filled in \\1"
+ ],
+ [
+  "^点到：(.*)$",
+  "Picked: \\1"
+ ],
+ [
+  "^指纹已复制：(.*)$",
+  "Fingerprint copied: \\1"
+ ],
+ [
+  "^复制指纹（Ctrl\\+C）：(.*)$",
+  "Copy fingerprint (Ctrl+C): \\1"
+ ],
+ [
+  "^⏰ 今日待复习（(\\d+)）$",
+  "⏰ Due today (\\1)"
+ ],
+ [
+  "^已完成 (\\d+)/(\\d+)$",
+  "Completed \\1/\\2"
+ ],
+ [
+  "^已轮换 (\\d+) 次$",
+  "Rotated \\1 times"
+ ],
+ [
+  "^今天（(.*)）$",
+  "Today (\\1)"
+ ],
+ [
+  "^今日 \\+(\\d+)$",
+  "Today +\\1"
+ ],
+ [
+  "^今天净变动 ([-\\d]+) 分（(\\d+) 人有加减）。",
+  "Today's net change: \\1 pts (\\2 students)."
+ ],
+ [
+  "^给全班每人加 ([-\\d]+) 分？",
+  "Give every student \\1 points?"
+ ],
+ [
+  "^给「(.*)」（共 (\\d+) 人）每位同学加几分？（负数可减分）$",
+  "Points for each of the \\2 students in \\1? (negative to deduct)"
+ ],
+ [
+  "^给 (\\d+)组(.*) 一键加分 \\+(\\d+)",
+  "Award +\\3 to group \\1 "
+ ],
+ [
+  "^已为「(.+)」核销 1 张「(.+)」，请兑现权益～$",
+  "Redeemed 1 \\2 for \\1 — please honour it～"
+ ],
+ [
+  "^🎉 (.+) 升到 Lv\\.(\\d+)！$",
+  "🎉 \\1 reached Lv.\\2!"
+ ],
+ [
+  "^🔒 积分已锁定（防误触）：先点「🔓 解锁」才能加分$",
+  "🔒 Points locked: tap 🔓 Unlock to add points"
+ ],
+ [
+  "^🔓 点一下「恢复写入」，数据就补上了$",
+  "🔓 Tap \"Restore write access\" to sync your data"
+ ],
+ [
+  "^📌 今天还没绑定文件（上次绑定「(.+)」）$",
+  "📌 Not bound today (last bound \\1)"
+ ],
+ [
+  "^🛟 已从「(.+)」自动找回：(.+)$",
+  "🛟 Recovered from \\1: \\2"
+ ],
+ [
+  "^🧹 值日加分：给 (\\d+) 位值日同学各 \\+(\\d+) 分$",
+  "🧹 Duty points: +\\2 for each of \\1 students"
+ ],
+ [
+  "^✅ 已导入「(.+)」",
+  "✅ Imported \\1"
+ ],
+ [
+  "^✅ 已导出「(.+)」",
+  "✅ Exported \\1"
+ ],
+ [
+  "^✅ 已下载「(.+)」",
+  "✅ Downloaded \\1"
+ ],
+ [
+  "^✅ 班级名已保存：(.+)$",
+  "✅ Class name saved: \\1"
+ ],
+ [
+  "^✅ 绑定成功：(.+)$",
+  "✅ Bound successfully: \\1"
+ ],
+ [
+  "^✅ 已保存并下载「(.+)」",
+  "✅ Saved and downloaded \\1"
+ ],
+ [
+  "^📦 已用「换机包」完整还原：(.+)$",
+  "📦 Fully restored via transfer pack: \\1"
+ ],
+ [
+  "^⚠️ (.+) 积分不足：需 (\\d+) 分，现有 (\\d+) 分。先去攒积分吧！$",
+  "⚠️ \\1 needs \\2 points (has \\3). Earn some more first!"
+ ],
+ [
+  "^🎁 为「(.+)」抽到 (\\d+) 张卡$",
+  "🎁 \\1 drew \\2 cards"
+ ],
+ [
+  "^📈 (.+) 的每日积分变化$",
+  "📈 Daily points for \\1"
+ ],
+ [
+  "^\\+?(\\d+) 分$",
+  "\\1 pts"
+ ],
+ [
+  "^积分卡 \\+(\\d+)$",
+  "Points card +\\1"
+ ],
+ [
+  "^(\\d)组(红|橙|黄|绿|蓝|紫)队$",
+  "Group \\1 \\2"
+ ],
+ [
+  "^(\\d)组(红|橙|黄|绿|蓝|紫)队",
+  "Group \\1 \\2"
+ ],
+ [
+  "^🥇 (\\d)组(红|橙|黄|绿|蓝|紫)队$",
+  "🥇 Group \\1 \\2"
+ ],
+ [
+  "^🥈 (\\d)组(红|橙|黄|绿|蓝|紫)队$",
+  "🥈 Group \\1 \\2"
+ ],
+ [
+  "^🥉 (\\d)组(红|橙|黄|绿|蓝|紫)队$",
+  "🥉 Group \\1 \\2"
+ ],
+ [
+  "^(\\d+) 人 · (\\d+) 组$",
+  "\\1 students · \\2 groups"
+ ],
+ [
+  "^课表 (\\d+) 天$",
+  "Timetable: \\1 days"
+ ],
+ [
+  "^古诗 (\\d+) 篇$",
+  "Poems: \\1"
+ ],
+ [
+  "^值日岗 (\\d+) 个$",
+  "Duty posts: \\1"
+ ],
+ [
+  "^自定义题 (\\d+) 道$",
+  "Custom questions: \\1"
+ ],
+ [
+  "^周均 ([\\d.]+)$",
+  "Avg \\1"
+ ],
+ [
+  "^今日 第(\\d+)名$",
+  "Today #\\1"
+ ],
+ [
+  "^第(\\d+)节 · (.+)$",
+  "Period \\1 · \\2"
+ ],
+ [
+  "^（该分类暂无儿歌，可去 ⚙设置⑩ 导入）$",
+  "(No rhymes here — import in ⚙ Settings ⑩)"
+ ],
+ [
+  "^✓ 正常$",
+  "✓ OK"
+ ],
+ [
+  "^未绑定$",
+  "Not bound"
+ ],
+ [
+  "^：点顶部(.*)$",
+  " : tap the top \\1"
+ ],
+ [
+  "^：打开程序 → 出现\"找回数据\"面板 → 点「📂 打开数据包文件」，选中那个 .json 即可。$",
+  " : open the app → the recovery panel appears → tap 📂 and pick the .json."
+ ],
+ [
+  "^「✓ 已写回文件」= 最安全；只显示「✓ 已自动保存」= 只存在浏览器里（关机可能丢，建议绑定）。$",
+  "\"✓ Written to file\" = safest; only \"✓ Auto-saved\" = browser only (bind to be safe)."
+ ],
+ [
+  "^出现\"⚠️\"字样时，点提示条上的按钮处理即可。$",
+  "If you see ⚠️, tap the button in the banner."
+ ],
+ [
+  "^拿不准就先点「🛟 导出数据包」存一份到桌面——数据先保住，再慢慢处理。$",
+  "If unsure, export a data pack to your desktop first — secure the data, then sort things out."
+ ],
+ [
+  "^积分页点「↩ 撤销上一步」；要清掉今天的，点「↺ 重置今日积分」。$",
+  "On the points page tap ↩ Undo; to clear today, tap ↺ Reset today's points."
+ ],
+ [
+  "^换座位；工具栏有 3 个方案槽，可存 3 套排法；点「轮换」可按周自动轮换。$",
+  "to swap seats; 3 plan slots are available; tap Rotate for weekly rotation."
+ ],
+ [
+  "^一键收起（自动保存 → 退出全屏 → 缩到角落）；点任务栏里的程序图标即可还原。$",
+  "Hide instantly (auto-save → exit fullscreen → shrink); restore from the taskbar."
+ ],
+ [
+  "^里：⑥ 值日岗位 · ⑨ 古诗库 · ⑩ 计算题库 · ⑪ 抽卡卡片 · ⑫ 单词词库。$",
+  " : ⑥ duty · ⑨ poems · ⑩ questions · ⑪ cards · ⑫ words."
+ ],
+ [
+  "^教室电脑若装了「系统还原 / 冰点还原」，请把这个 html 放到$",
+  "If the classroom PC has a restore card, put this HTML file on"
+ ],
+ [
+  "^等不会被还原的位置；",
+  "a location that is not restored;"
+ ],
+ [
+  "^放在会被还原的 C 盘，第二天文件本身也会被还原。$",
+  "on a restored C drive the file itself is reverted next day."
+ ]
+]
