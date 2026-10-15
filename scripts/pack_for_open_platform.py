@@ -18,7 +18,11 @@
   2. 只在打包时**重写 frontmatter 为 9 字段简洁版**（正文原样）
   3. 把 description_en 里的 " & " 换成 " and "（YAML 保留字符）
   4. 打**干净 zip**：无 macOS extra field、无 .DS_Store / __MACOSX / *.bak
-  5. 自检：9 字段齐全、含 SKILL.md、零 extra field
+  5. 自检：9 字段齐全、含 SKILL.md、零 extra field、
+     **解压后总大小 ≤ 3MB**（平台按解压后字节数校验，超了报"解压后超出大小限制"）
+       · 完整版含 3 个大 HTML ≈ 3.45MB → 必然超限，开放平台请用 --lite
+       · --lite 剔除 web-generator.html 与 ready-to-use-workbench.html
+         （二者都能由 scripts 从模板一行命令重建，功能等价）
 
 用法：
   python3 pack_for_open_platform.py --out ~/Desktop/skill.zip          # 完整版
@@ -45,6 +49,10 @@ LITE_SKIP = ('templates/ready-to-use-workbench.html',
              'templates/web-generator.html')
 
 SKIP_NAMES = {'legacy_ids.json'}
+
+#: 开放平台硬限制：**解压后**总大小 ≤ 3 MB（不是 zip 文件大小！）
+#: 平台报错原文："压缩包解压后超出大小限制（最大 3MB，即 3145728 字节）"
+SIZE_LIMIT = 3 * 1024 * 1024
 
 
 def parse_frontmatter(text):
@@ -125,6 +133,13 @@ def verify(out):
     if extra:
         print('  ⚠ 多余字段（平台未列，建议清掉）：%s' % extra)
     top = sorted(set(n.split('/')[1] for n in names if n.count('/') > 1 and n.split('/')[1]))
+    total = sum(i.file_size for i in z.infolist())
+    ok = total <= SIZE_LIMIT
+    print('  %s 解压后总大小：%d 字节（%.2f MB ／ 上限 %.2f MB）'
+          % ('✓' if ok else '✗', total, total / 1048576, SIZE_LIMIT / 1048576))
+    if not ok:
+        sys.exit('✗ 自检失败：解压后超限。请用 --lite（剔除两个大成品文件）。'
+                 '当前 %d > %d' % (total, SIZE_LIMIT))
     print('  ✓ 自检通过：%d 条目 / %s' % (len(z.infolist()), ', '.join(top)))
     print('  ✓ frontmatter %d 字段（平台规范 9）' % len(fm))
     return z
@@ -149,7 +164,10 @@ def main():
     print('打包%s → %s' % ('【精简版】' if args.lite else '【完整版】', out))
     n = build_zip(src, out, full_text, skip_rel=LITE_SKIP if args.lite else ())
     verify(out)
-    print('✅ 完成：%.2f MB / %d 个文件' % (os.path.getsize(out) / 1048576, n))
+    zc = zipfile.ZipFile(out)
+    print('✅ 完成：%d 个文件 ｜ zip %.2f MB ｜ 解压后 %.2f MB（平台按解压后计）'
+          % (n, os.path.getsize(out) / 1048576,
+             sum(i.file_size for i in zc.infolist()) / 1048576))
     print('   上传入口：https://open.workbuddy.cn → 开发者中心 → 技能 → 上传 ZIP')
 
 
