@@ -105,6 +105,8 @@ Fonts scale with screen width (×1.8 above 2400 px), and homework font size is a
 
 ## Changelog
 
+- **v2.3.1** — English UI polish: nested translation in template rules (`第1节 · 数学` → `Period 1 · Math`), team names and other missing strings added, two engine defects fixed
+- **v2.3.0** — **Chinese / English interface switching** (⚙ Settings, first item): the whole UI follows the selected language; student names, poems, rhymes, word data and editable team names are never translated
 - **v2.2.0** — Easier onboarding: added a **web generator** (zero install) and a **ready-to-use file**; built-in **❓ Having trouble?** panel; fixed timetable-season switching resetting custom timetables, and un-recoverable file-write permission failures
 - **v2.1.1** — Fixed generated files showing the default class name in the header
 - **v2.1.0** — Fixed Markdown-table timetable import; card-draw buttons never bound; high-score crash
