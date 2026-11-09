@@ -1,23 +1,43 @@
 ---
 name: class-management-workbench
-slug: class-management-workbench
-displayName: 班级管理工作台生成器
-summary: 一键生成班主任专用单文件离线工作台：座位表、积分榜、小组竞赛、值日、课表、作业、古诗、口算、单词卡、抽卡共 12 个模块，适配教室触摸大屏
-tags: [班级管理, 班主任, 座位表, 积分, 值日, 课表, 教室大屏, 教师工具, 单文件HTML, 离线]
+display_name: 班级管理工作台生成器
 display_name_en: Classroom Management Workbench Generator
 description: 为中小学班主任生成一套「班级管理工作台」单文件离线 HTML——含座位表、积分榜、小组竞赛、值日、课表、作业、古诗诵读、口算/竖式/脱式练习、英语单词记忆、随机点名与倒计时、排行榜、抽卡共 12 个模块，适配教室触摸大屏（希沃一体机等）。当用户说「做个班级小助手 / 班级管理工具 / 班级工作台」「给我班做一个座位表+积分+值日的工具」「要一个能排座位、加分、倒计时的网页」，或需要为某个具体班级（如「三年级二班 38 人」）定制班级管理页面时使用；也适用于在已有的班级小助手 HTML 上迭代修改功能。
-description_zh: 面向中小学班主任：问清几项班级信息（班级名、人数、小组数、学生名单、课表），用脚本生成一份双击即用的单文件离线班级管理工作台（座位、积分、竞赛、值日、课表、作业、诵读、计算、单词、工具、排行、抽卡），2.1 起内置「动物头像等级系统」（每只卡通小动物对应一张积分卡、星星点亮升级、Lv 无上限）并对 3480px 教室大屏做 1.8 倍全局统一适配；在真实浏览器里验证后交付，并教老师用「绑定程序文件」防止教室还原卡清数据。
-description_en: For primary and secondary homeroom teachers, generate a ready-to-use single-file offline classroom management workbench (seating chart, points, group competition, duty roster, timetable, homework, poetry recitation, math drills, English vocabulary, random picker & countdown, leaderboard, reward cards, plus a v2.0 animal-avatar level system with 12 hand-drawn watercolor pets, star-to-level-up progression with unlimited Lv, and unified 1.8x big-screen scaling for 3480px touch displays) from a few class details, verify it in a real browser, deliver it, and teach the file-binding trick that survives classroom restore cards.
-version: 2.1.1
+description_zh: 面向中小学班主任：三条路都能拿到一份双击即用的单文件离线班级管理工作台（座位、积分、竞赛、值日、课表、作业、诵读、计算、单词、工具、排行、抽卡共 12 模块）——① 让 AI 按班级信息直接生成；② 老师自己在「网页版生成器」填三步生成（零安装）；③ 直接用「空白班」文件在设置里贴名单。内置动物头像等级系统与 3480px 教室大屏适配；程序内含「❓遇到问题」通俗问答，并教老师用「绑定程序文件」防止教室还原卡清数据。
+description_en: For primary and secondary homeroom teachers, generate a ready-to-use single-file offline classroom management workbench (seating chart, points, group competition, duty roster, timetable, homework, poetry recitation, math drills, English vocabulary, random picker and countdown, leaderboard, reward cards, plus a v2.0 animal-avatar level system with 12 hand-drawn watercolor pets, star-to-level-up progression with unlimited Lv, and unified 1.8x big-screen scaling for 3480px touch displays) from a few class details, verify it in a real browser, deliver it, and teach the file-binding trick that survives classroom restore cards.
+category: education
+version: 2.4.0
 author: 粉笔与代码
-agent_created: true
 ---
 
 # 教师班级管理工作台
 
+> **获取方式**（两处内容一致，任选其一）：
+> · **GitHub（源码 / 完整仓库）**：https://github.com/seahp/class-management-workbench
+> · **SkillHub（技能商店，一键安装）**：https://skillhub.cn/skills/class-management-workbench
+>   `skillhub install class-management-workbench --namespace user_1db801dd`
+
 ## 用途
 
 给班主任产出一份**单文件离线 HTML**（双击即用、无需联网、数据存本机浏览器），把班级日常管理的核心场景装进一个页面：座位、积分、小组竞赛、值日、课表、作业、诵读、计算、单词、工具、排行、抽卡。面向**教室触摸大屏**（希沃一体机等）设计：一屏不翻动、按钮够大、可触摸拖拽。
+
+## 三种用法（先问老师会不会用命令行，再选路）
+
+| 用法 | 适合 | 怎么做 |
+|---|---|---|
+| **① AI 生成**（本技能主路径） | 老师身边有 AI 助手 | 老师报班级信息 → 你跑 `scripts/customize.py` 生成 → 交付前按 `references/verification.md` 验证 |
+| **② 网页版生成器**（零安装） | 老师自己弄、不想碰命令行 | 打开 `templates/web-generator.html`（或在线版），填班级名/名单/组数/课表 → 点生成 → 下载成品。**纯浏览器内完成，离线也能用**。若包内没有此文件：`python3 scripts/build_web_generator.py` 现场构建（需先有模板） |
+| **③ 空白班文件**（最省事） | 老师连生成都不想点 | 直接给 `templates/ready-to-use-workbench.html`，双击打开 → ⚙ 设置 → ③ 贴自己班名单 → 完事。若包内没有此文件：`python3 scripts/customize.py --class-name "一年级一班" --count 40 --out ready-to-use-workbench.html` 现场生成 |
+
+> ⚠️ **遇到不懂命令行的老师，不要让他去装 Python、敲命令** —— 直接推 ② 或 ③。
+> 判断口诀：老师愿意发名单给你 → 用 ①；老师要自己动手 → 用 ②；老师只想马上能用 → 用 ③。
+
+**程序内置了「❓ 遇到问题」面板**（右上角）：12 条大白话问答，覆盖数据保存、换电脑、还原卡、换季课表等。老师提问前先让他点 ❓ 看看；更完整的一份在 `references/faq-for-teachers.md`。
+
+**界面支持中文 / English 切换**（⚙ 设置 → 第一项「🌐 界面语言」）：英文环境下可整界面切英文。
+翻译由 `scripts/add_i18n.py` 注入（读取 `scripts/i18n-en.json` 字典 + `i18n-en-patterns.json` 模板规则），
+**学生姓名、队伍名、古诗、儿歌、词库、题库等内容一律不翻译**（可编辑区域自动跳过，防止英文覆盖用户数据）。
+英文说明见仓库 `README.en.md`。
 
 ## 何时使用
 
@@ -46,7 +66,7 @@ agent_created: true
 
 **年级信息**用于两处：计算页竖式难度（`#vertGrade` 1~6）与单词册别。问清年级后一并写入。
 
-### 第 2 步：跑脚本生成（不要手改 HTML）
+### 第 2 步：生成（AI 路线用脚本；自己动手的老师走网页版生成器）
 
 ```bash
 python3 ~/.workbuddy/skills/class-management-workbench/scripts/customize.py \
@@ -58,6 +78,9 @@ python3 ~/.workbuddy/skills/class-management-workbench/scripts/customize.py \
 ```
 
 参数说明见 `references/customize-params.md`。脚本会写入班级名、名单、性别、小组数、课表，并回显确认。
+
+**老师要自己动手时**，给他 `templates/web-generator.html`（双击打开即用，不装任何软件）：
+它的输出与 `customize.py` **逐字节一致**（每次发布都会做等价性验证），填三步即可拿到成品。
 
 **默认一律用脚本改，不要直接编辑 HTML**——文件 40 万字符，手工编辑极易出错（详见 `references/iteration-rules.md`）。
 
@@ -104,6 +127,34 @@ python3 ~/.workbuddy/skills/class-management-workbench/scripts/build_template.py
 localStorage KEY、IndexedDB 名、内嵌数据全局变量、数据脚本 id 全部改为 `class_helper_v1` / `__CLASS_*` 系），
 最后校验 customize.py 依赖的锚点是否齐全。**任何一项未命中就报错退出**，不会产出半成品模板。
 
+## 2.3.1 更新（2026-10-15）· 英文界面质量完善
+
+1. 🔤 **模板规则支持嵌套翻译**（`$Dn`）：如「第1节 · 数学」→ `Period 1 · Math`（此前课程名会残留中文）
+2. 🎨 **补齐遗漏词条**：队伍名（`Group 2 Orange`）、奖牌队名、值日标题（`Thursday duty list`）、空状态提示、单元册别前缀（`1A · …`）
+3. 🐞 **修两个引擎缺陷**：① 单字符词条（如颜色字「橙」）被过滤掉导致嵌套翻译失效；② 重复的模板规则使先注册的旧规则抢先匹配
+4. ✅ 复验：英文模式下 12 页仅剩**应当保留**的中文（学生姓名、古诗、儿歌、教材单元名、可编辑队伍名），其余全部英化；中英文双模式 12 页零溢出、0 异常；生成器与脚本版输出仍逐字节一致
+
+## 2.3.0 更新（2026-10-14）· 中英文双语界面
+
+1. 🌐 **界面语言切换**：⚙ 设置第一项可在「🇨🇳 中文 / 🇬🇧 English」之间切换，**整界面（导航、按钮、提示、弹窗、问答、toast）随语言变化**，选择记入存档（`state.lang`）
+2. 🔒 **内容不翻译**：学生姓名、队伍名、古诗、儿歌、词库、题库、卡片池等**一律保持原样**；`contenteditable` 区域（班级名、课表格、队名）自动跳过，避免英文覆盖老师的数据
+3. 🧩 **实现方式**：`scripts/add_i18n.py` 注入 i18n 引擎（869 条字典 + 89 条模板规则），DOM 文本节点精确匹配替换、原文存 `__zh` 属性、切回中文逐字还原；`MutationObserver` 自动补译动态渲染内容
+4. 📘 **英文说明**：仓库新增 `README.en.md`
+
+## 2.2.0 更新（2026-10-14）· 面向「好上手」的改版
+
+针对市场审核反馈（"操作门槛高 / 提示信息要查文档 / 缺通俗问答"）做了四条：
+
+1. 🌐 **新增「网页版生成器」**（`templates/web-generator.html`）：填班级名/名单/组数/课表 → 浏览器内生成 → 下载成品。**零安装、零命令、离线可用**；输出与 `customize.py` 逐字节一致（有等价性验证保障）
+2. 📄 **新增「空白班」通用文件**（`templates/ready-to-use-workbench.html`）：双击即用，设置③贴名单即可，为完全不想折腾的老师准备
+3. ❓ **程序内置「遇到问题」面板**（右上角 ❓，12 条大白话问答）+ `references/faq-for-teachers.md`
+4. 💬 **老师可见文案全面体检**：提示条统一"主句 + 做法 + 原因折叠"格式；默认示例课表改为**作息对齐**（含升旗/上操，换季演示正常）
+
+同时修复两个真实问题：
+
+5. 🐞 **课表换季会把自定义课表重置**：首次切到另一季节时，原实现用内置默认课表生成 → 老师自排的课表被整套覆盖。现改为**由当前课表按新作息重排**（课程内容与备注全保留，只移动升旗/上操位置），并给保存按钮加上目标季节文案（「💾 保存到 ❄️ 冬季课表」）
+6. 🐞 **写回权限失败无法自助恢复**：浏览器权限不跨页面重载，原自动写回失败后只提示"重新绑定"。现新增「🔓 立即恢复写入」一键按钮（打开页面时预检 + 点页面任意处自动恢复 + 恢复后自动补写）
+
 ## 2.1.1 修复（2026-10-10）
 
 - 🐞 **生成的文件页头显示错误班名**：页头大标题是 HTML 里的静态文字，`customize.py` 此前只替换了 JS 里的默认值、没替换它 → 生成出来的文件页头一直显示模板默认的「一年级一班」，必须等老师在设置里点一次"应用"才会变。现在：① `customize.py` 同时替换页头静态文字；② **主程序启动时也会用存档里的班级名自动同步页头**（旧文件直接受益，无需重新生成）
@@ -131,6 +182,11 @@ localStorage KEY、IndexedDB 名、内嵌数据全局变量、数据脚本 id �
 
 ## 资源
 
+- `templates/web-generator.html` — **网页版生成器**（含内嵌模板，双击即用；由 `scripts/build_web_generator.py` 从模板构建；★ 若包内未随附，跑该脚本即可现场生成，功能完全等价）
+- `templates/ready-to-use-workbench.html` — **空白班**现成文件（40 个占位名，老师贴名单即用；★ 若包内未随附，用 `scripts/customize.py --count 40` 现场生成，功能完全等价）
+- `references/faq-for-teachers.md` — 给老师的通俗问答（与程序内 ❓ 面板同源）
+- `scripts/i18n-en.json` + `scripts/i18n-en-patterns.json` — **界面英文字典**（946 条精确匹配 + 94 条模板规则）
+- `scripts/add_i18n.py` — 把中英文切换注入程序（构建链的一环，改完主程序后按顺序跑：build_template → build_web_generator → customize）
 - `templates/class-workbench-template.html` — 脱敏后的程序模板（约 910 KB，2.0 起内嵌 12 张动物头像，无任何真实学生/学校信息）
 - `scripts/customize.py` — 按班级信息定制模板（生成成品）
 - `scripts/build_template.py` — 反向：把真实程序脱敏成模板（含自检）

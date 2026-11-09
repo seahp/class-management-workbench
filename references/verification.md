@@ -87,6 +87,35 @@ for(const tn of tabs){
 - **不是所有控件都是 button**：作业页是 `input[type=range]` ×4 + checkbox，要单独派发 `input`/`change` 事件验证
 - 文件/目录选择、导出下载类按钮要跳过点击（headless 会挂起或在 Downloads 留文件），用静态引用确认即可
 
+### 1f. 网页版生成器等价性验证（2026-10-14 新增，发版必跑）
+
+`templates/web-generator.html` 与 `scripts/customize.py` 是**两套实现、同一产物**，改任一侧都必须验等价：
+
+```bash
+# 脚本版参照
+python3 scripts/customize.py --class-name "三年级二班" --names-file roster.txt --cols 6 --out /tmp/ref.html
+# Python 侧哈希（注意用 UTF-8 字节，不要用 len(str)——emoji 的码点/码元计数不同）
+python3 -c "
+import io
+s=io.open('/tmp/ref.html',encoding='utf-8').read(); h=5381
+for x in s.encode('utf-8'): h=((h*33)+x)&0xFFFFFFFF
+print(len(s.encode('utf-8')), h)"
+```
+
+浏览器侧用 CDP：`Runtime.evaluate` 调 `window.__GEN_BUILD__({className,roster,cols})`，
+返回 `new TextEncoder().encode(html)` 的**字节数 + 同一个 djb2 哈希**，与脚本版比对。
+**两者必须完全相等**（2026-10-14 实测：978075 字节 / 哈希 3902156634，逐字节一致）。
+
+> ⚠️ 两个坑：① 比对要用 **UTF-8 字节 + 字节哈希**，`str.length` 在 JS（UTF-16 码元）和 Python（码点）对 emoji 计数不同，会误判"不一致"；
+> ② 改模板后必须**重建生成器**（`build_web_generator.py`），否则生成器里内嵌的还是旧模板。
+
+### 1g. 技能包发布前检查（2026-10-14 新增）
+
+- **包内文件名必须全 ASCII**：`zip` 命令在 macOS 上不会给中文文件名打 UTF-8 标志位，Windows 解压会变乱码（实测 `references/faq-给老师.md` → `faq-τ╗ÖΦÇüσ╕ê.md`）。中文显示名写进 SKILL.md 说明即可，文件名用英文
+- **本地专用文件不能进包**：`scripts/legacy_ids.json`（本机历史标识符映射）打包时要 `-x` 排除，仓库里也写进 `.gitignore`
+- **体积 ≤3MB**：加了大文件后要复测（当前 2.2.0：原始 3.2MB → 压缩 1.57MB）
+- **解压后跑一遍端到端**：从 zip 解出 → `customize.py` 生成 → 浏览器冒烟（12 页零溢出 + 关键功能）
+
 ## 二、隐私检查（分发前必做）
 
 ```bash
@@ -247,8 +276,9 @@ print(m.group(1).replace('|','\n') if m else 'NO OUTPUT')
 
 技能包里带的是**脱敏模板**，一旦模板里混入真实姓名，就等于把学生信息发布出去。发布/更新技能包前按顺序跑：
 
-1. `scripts/build_template.py <真实程序.html>` —— 脚本自带 8 项脱敏 + 两项自检
-   （无旧前缀残留、customize.py 依赖的锚点齐全）。**报错就不要继续**。
+1. `scripts/build_template.py <真实程序.html>` —— 脚本做 3 项内置脱敏（名单/课表/示例姓名）
+   + 历史标识符替换（映射表在 `scripts/legacy_ids.json`，不入库）+ 残留自检 + 锚点自检
+   （customize.py 依赖的锚点是否齐全）。**报错就不要继续**。
 2. **真实姓名全量扫**：从真实程序里抽出 `STUDENT_NAMES` 清单，逐个在模板里 `in` 判断，必须 0 命中。
    再扫学校名 / 班级名（如「X年级N班」）/ 本地路径（挂载盘符、系统用户目录）/ 联系方式正则。
 3. **端到端生成**：用虚构名单跑 `customize.py` 产出示例成品，检查：班级名已写入、无 `学生01` 残留、
