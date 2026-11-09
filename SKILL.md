@@ -1,12 +1,20 @@
 ---
 name: class-management-workbench
+name: class-management-workbench
+slug: class-management-workbench
+displayName: 班级管理工作台生成器
 display_name: 班级管理工作台生成器
 display_name_en: Classroom Management Workbench Generator
+display_name: 班级管理工作台生成器
+display_name_en: Classroom Management Workbench Generator
+summary: 一键生成班主任专用单文件离线工作台：座位表、积分榜、小组竞赛、值日、课表、作业、古诗、口算、单词卡、抽卡共 12 个模块，适配教室触摸大屏；界面支持中英文切换
+tags: [班级管理, 班主任, 座位表, 积分, 值日, 课表, 教室大屏, 教师工具, 单文件HTML, 离线, 双语]
 description: 为中小学班主任生成一套「班级管理工作台」单文件离线 HTML——含座位表、积分榜、小组竞赛、值日、课表、作业、古诗诵读、口算/竖式/脱式练习、英语单词记忆、随机点名与倒计时、排行榜、抽卡共 12 个模块，适配教室触摸大屏（希沃一体机等）。当用户说「做个班级小助手 / 班级管理工具 / 班级工作台」「给我班做一个座位表+积分+值日的工具」「要一个能排座位、加分、倒计时的网页」，或需要为某个具体班级（如「三年级二班 38 人」）定制班级管理页面时使用；也适用于在已有的班级小助手 HTML 上迭代修改功能。
 description_zh: 面向中小学班主任：三条路都能拿到一份双击即用的单文件离线班级管理工作台（座位、积分、竞赛、值日、课表、作业、诵读、计算、单词、工具、排行、抽卡共 12 模块）——① 让 AI 按班级信息直接生成；② 老师自己在「网页版生成器」填三步生成（零安装）；③ 直接用「空白班」文件在设置里贴名单。内置动物头像等级系统与 3480px 教室大屏适配；程序内含「❓遇到问题」通俗问答，并教老师用「绑定程序文件」防止教室还原卡清数据。
 description_en: For primary and secondary homeroom teachers, generate a ready-to-use single-file offline classroom management workbench (seating chart, points, group competition, duty roster, timetable, homework, poetry recitation, math drills, English vocabulary, random picker and countdown, leaderboard, reward cards, plus a v2.0 animal-avatar level system with 12 hand-drawn watercolor pets, star-to-level-up progression with unlimited Lv, and unified 1.8x big-screen scaling for 3480px touch displays) from a few class details, verify it in a real browser, deliver it, and teach the file-binding trick that survives classroom restore cards.
 category: education
 version: 2.4.0
+homepage: https://github.com/seahp/class-management-workbench
 author: 粉笔与代码
 ---
 
