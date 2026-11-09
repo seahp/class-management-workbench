@@ -15,3 +15,6 @@ Thumbs.db
 
 # 本机历史标识符映射（含个人历史值，不入库）
 scripts/legacy_ids.json
+
+# SkillHub 本地元数据（含个人路径，不入库）
+_skillhub_meta.json
