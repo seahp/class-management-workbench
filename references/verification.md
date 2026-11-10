@@ -106,17 +106,89 @@ print(len(s.encode('utf-8')), h)"
 返回 `new TextEncoder().encode(html)` 的**字节数 + 同一个 djb2 哈希**，与脚本版比对。
 **两者必须完全相等**（2026-10-14 实测：978075 字节 / 哈希 3902156634，逐字节一致）。
 
+> ⚠️ `__GEN_BUILD__` 现在返回的是**对象** `{html, roster, cols, className}`，直接 `TextEncoder().encode(返回值)` 会得到 `"[object Object]"`（15 字节）——必须对 `r.html` 取哈希。2026-11-10 实测：1097459 字节 / 哈希 2223092700，浏览器侧与 `customize.py` 侧逐字节一致。
+
+> ⚠️ **`__GEN_BUILD__` 的入参形状是等价性测试的头号坑**（2026-11-10 在这里连踩四次）：
+> `roster` 必须是 **`[["张明","F"],["李红","M"], …]` 这种「姓名 + M/F 代码」的数组**，不是「张明 女」那种原始行文本。
+> 性别归一化由页面里的 `parseNames()` 完成，而 `parseNames` **封在 IIFE 内、不是全局函数**，探针调不到；
+> 对外接口只有 `window.__GEN_BUILD__`。三种错法与症状（每种都能一眼认出）：
+> · 传**字符串化的 JSON**（`__GEN_BUILD__("{…}")`）→ `opt.roster` 取不到 → 回落成 40 个占位名，产物**大 300 字节**；
+> · 传 `["张明 女", …]`（字符串数组）→ 内部取 `r[0]`/`r[1]` 拿到的是**第 1、2 个字**，姓名被切成单字；
+> · 传 `[["张明","女"], …]`（没转 M/F）→ 每个性别多 2 字节，20 人**恰好差 40 字节**。
+> 判定口径：字节数只差几十/几百而 `roster.length` 对得上时，先怀疑**探针入参**，不要怀疑应用。
+
 > ⚠️ 两个坑：① 比对要用 **UTF-8 字节 + 字节哈希**，`str.length` 在 JS（UTF-16 码元）和 Python（码点）对 emoji 计数不同，会误判"不一致"；
 > ② 改模板后必须**重建生成器**（`build_web_generator.py`），否则生成器里内嵌的还是旧模板。
 
 ### 1g. 技能包发布前检查（2026-10-14 新增）
 
 - **包内文件名必须全 ASCII**：`zip` 命令在 macOS 上不会给中文文件名打 UTF-8 标志位，Windows 解压会变乱码（实测 `references/faq-给老师.md` → `faq-τ╗ÖΦÇüσ╕ê.md`）。中文显示名写进 SKILL.md 说明即可，文件名用英文
-- **本地专用文件不能进包**：`scripts/legacy_ids.json`（本机历史标识符映射）打包时要 `-x` 排除，仓库里也写进 `.gitignore`
+- **本地专用文件不能进包**：`scripts/legacy_ids.json`（本机历史标识符映射）、`scripts/desensitization.local.json`（本机禁忌词清单）、`_skillhub_meta.json`（含本地路径）三份文件都**不入库、不进包**；
+  `pack_for_open_platform.py` 的 `SKIP_NAMES` 已列全，手工 `zip` 时要用 `-x` 排除。仓库与包内只放 `.example` 版本
 - **体积 ≤3MB**：加了大文件后要复测（当前 2.2.0：原始 3.2MB → 压缩 1.57MB）
 - **解压后跑一遍端到端**：从 zip 解出 → `customize.py` 生成 → 浏览器冒烟（12 页零溢出 + 关键功能）
 
-## 二、隐私检查（分发前必做）
+### 1h. 冒烟闸门 `scripts/smoke.cjs`（2026-11-10 新增，**发版必跑，不许跳过**）
+
+上面 1c/1d 是"脚本骨架 + 人工核对"，容易凭印象跳过。1h 把它们合成一个可执行闸门，**一条命令出结论，非 0 退出码即不准发版**：
+
+```bash
+node scripts/smoke.cjs 程序.html                    # 默认 3480,2160（教室大屏）
+node scripts/smoke.cjs 程序.html --size 1920,1080 --out 报告.json --keep
+```
+
+退出码：**0 全绿 / 2 只有警告 / 1 硬失败**。硬失败项只有三类，全部对应真实事故：
+
+| 硬失败 | 抓的是什么 | 本次事故里的表现 |
+|---|---|---|
+| `★绑定早于节点` | 静态：`$('#id').addEventListener` 出现在该 id 的 DOM 节点**之前**（顶层 classic script 只看得到自己之前的标记） | 块0 第4830/4831 行绑定 `#dutyAnimClose`/`#dutyAnimOverlay`，节点在 9107 行 → **2 处命中** |
+| `运行时未捕获错误` | 真浏览器里 `window.onerror` + `unhandledrejection` 收集（分类：`Uncaught / is not defined / before initialization / Cannot read` 等算致命；`Clipboard / permission denied / ResizeObserver` 等无头沙箱噪声只警告） | `Uncaught TypeError ... @7337行` ×1 |
+| `★脚本疑似被中断` | 探针读顶层 `let` 的 `typeof`——**TDZ 就说明"声明了但没执行到"**，这是整块被中断的铁证 | `let-rhymeCat=TDZ/未初始化` |
+
+警告项（必须扫一眼，可按已知误报表放行）：重复 id、静态哑按钮（`seatPlan1/2`、`exFill*` 是拼接 id 与字典遍历，**已知误报**）、点了没反应（1d 的 6 类误报）、导出物为空。
+
+**闸门真正的价值是"健康版 vs 事故版"的差值**，同一份程序改前改后各跑一次对比：
+
+```
+事故版：绑定早于节点 2 / 未捕获错误 4 / 疑似无反应 42 / 导出物 6   → exit 1
+修复版：绑定早于节点 0 / 未捕获错误 1(剪贴板噪声) / 疑似无反应 17 / 导出物 12 → exit 2
+```
+
+「疑似无反应 42→17」「导出物 6→12」这种跳跃，比逐条读代码可靠得多——**用户报的"三个按钮没反应"，在闸门里一眼就是整片按钮同时哑**。
+
+**发版动作固定为六条命令**（先隐私，再静态一致性，最后冒烟；本机程序 + 出包的模板 + 网页版生成器都要跑）：
+
+```bash
+# ⓪ 隐私闸门：必须在最前面，命中真实姓名/本地路径就直接停，不要再去跑后面五条
+python3 scripts/check_desensitization.py --program "/路径/班级小助手.html" templates/ ../workbench-package/
+python3 scripts/sync_i18n.py "/路径/班级小助手.html" templates/class-workbench-template.html --check   # 词条一致性
+python3 scripts/check_template_drift.py "/路径/班级小助手.html"                                        # 模板是否落后程序
+node scripts/smoke.cjs "/路径/班级小助手.html"
+node scripts/smoke.cjs templates/class-workbench-template.html
+python3 scripts/customize.py --class-name 测试班 --count 40 --out /tmp/gen.html && node scripts/smoke.cjs /tmp/gen.html
+```
+
+第 ⓪ 条 exit≠0 就**不许发布**——它查的是隐私，后面五条全绿也救不回来。
+前两条（词条、模板漂移）任一 exit≠0 就**先修一致性再谈冒烟**——冒烟只能证明"这一份能跑"，证明不了"三份产物是同一份"。
+
+### 1i. 防漂移闸门（2026-11-10 新增，两个脚本）
+
+| 脚本 | 防的是哪类漂移 | 判定 |
+|---|---|---|
+| `scripts/check_template_drift.py 程序.html` | **模板 ≠ 程序**：手工往模板上抄改动、或程序改完忘了重建模板 | 用 `build_template.py` 现场重算一份模板到 `/tmp`，与 `templates/` 里那份逐字节比；有差异时打印最多 12 个 difflib 块，并标出含脱敏标记的块。`--fix` 直接重建 |
+| `scripts/sync_i18n.py 文件.html [第二个.html …]` | **内嵌词条 ≠ JSON 来源**：改词条只改了 HTML 里那串字面量，下次重建被打回 | 以 `scripts/i18n-en.json` / `i18n-en-patterns.json` 为唯一来源重写两处字面量；`--check` 只报告不写 |
+
+⚠️ 两条已验证的规矩：
+
+1. **模板只能由 `build_template.py` 从真实程序重新生成**（`check_template_drift.py` 就是这条规矩的自动执行）。产物校验（base64 一致、哈希一致）只证明**产物忠实于模板**，不证明**模板忠实于程序**——2026-11-10 就是靠这条发现模板悄悄落后本班程序 36 个代码块。
+2. **i18n 词条的唯一来源是那两个 JSON 文件**。`add_i18n.py` 是一次性注入器（检测到 `applyLang` 就拒绝再跑），所以加词只能改 JSON 再 `sync_i18n.py` 写入。比较口径不同不是bug：**字典按键值语义比较**（精确查表，键序无关），**模板规则逐字节比较**（"先匹配先赢"，顺序就是语义）。
+   新增规则一律**追加到末尾**，否则会遮蔽前面的规则；只有需要同族规则里"更具体的先命中"时才插到通用规则之前（例：`^（≥(\d+)分）$` 必须在 `^(\d+)分$` 前面）。
+
+**英文补词的验收口径**：无头探针进英文模式的抽卡页，收集可见区里仍含中文的文本节点，**排除学生姓名与卡片名/说明**（内容是老师的数据，按设计不翻译）。剩下的每一条都要么补进字典、要么补进模板规则，直到只剩内容类中文。隐藏元素（如 `#gachaStats` 带 `style="display:none"`）里的死文字不算缺口。
+
+⚠️ 探针自身的坑（已踩过）：① 错误收集脚本必须插在**第一个 `<script>` 之前**（插 `<head>` 里 `find` 返回 -1 会静默贴到文件末尾，探针永远无输出）；② 报告函数在 `run().catch()` 路径里也要补齐 probes 字段，否则 TDZ 检测器失效（本版曾因此漏判，靠"绑定早于节点"才发现）；③ 破坏性按钮（`fullReset`/`scoreReset`/`dutyReset`/`rosterApply`/`todayReset`/`pkToPerson`/`wordsReset`/`mathReset`）排在最后点，点前 `JSON.stringify(state)` 快照、点后 `(0,eval)('state=...')` 还原 + `rerenderAll()`；④ 下载与文件选择只 spy `HTMLAnchorElement.prototype.click` / `HTMLInputElement.prototype.click` 计数，**不真点**，保证 Downloads 干净。
+
+
 
 ```bash
 python3 -c "
@@ -279,8 +351,34 @@ print(m.group(1).replace('|','\n') if m else 'NO OUTPUT')
 1. `scripts/build_template.py <真实程序.html>` —— 脚本做 3 项内置脱敏（名单/课表/示例姓名）
    + 历史标识符替换（映射表在 `scripts/legacy_ids.json`，不入库）+ 残留自检 + 锚点自检
    （customize.py 依赖的锚点是否齐全）。**报错就不要继续**。
-2. **真实姓名全量扫**：从真实程序里抽出 `STUDENT_NAMES` 清单，逐个在模板里 `in` 判断，必须 0 命中。
-   再扫学校名 / 班级名（如「X年级N班」）/ 本地路径（挂载盘符、系统用户目录）/ 联系方式正则。
+
+   ⚠️ **模板只能由 `build_template.py` 从真实程序重新生成，不许手工往模板上抄改动。**
+   2026-11-10 发现模板已悄悄落后本班程序 **36 个代码块**（抽卡页 T 型布局、值日岗位 8 列网格、
+   座位行高、标签按钮尺寸、权益背包缩卡……全都没进模板），而 `ready-to-use` / `web-generator`
+   是"从模板重建、逐字节校验一致"的——校验只证明**产物忠实于模板**，不证明**模板忠实于程序**，
+   所以漂移一路通过所有闸门。口诀：改完程序先跑 `build_template.py`，再跑后两步；
+   判断是否漂移**直接跑 `python3 scripts/check_template_drift.py 程序.html`**（它把"重算模板 + difflib 比块"
+   自动化了，见 1i；`--fix` 顺手重建）。2026-11-10 那 36 处差异就是靠这套比对抓出来的。
+
+   ⚠️ **历史标识符那一步会"静默跳过"**：`scripts/legacy_ids.json` 不存在时只打一行 `ⓘ` 就继续。
+   2026-11-10 就是这样：母版程序的存储键名/IndexedDB 库名/内嵌数据全局变量都带**校名缩写**
+   （形如 `xxx_grade1_class_v1`、`__XXX_EMBEDDED_STATE__`、`xxxDataScript`），而映射表文件缺失，
+   结果**连续几个已发布版本**的模板、空白班、网页版生成器里都原样带着这个缩写。
+   规矩：**只要本机程序的历史标识符改过名，就必须先建 `legacy_ids.json`（照 `.example` 抄）再重建模板**；
+   `check_desensitization.py` 的西文禁词（把缩写本身填进 `desensitization.local.json`）负责兜底。
+   跨版本还要能读旧包的地方，前缀写成字符类（`[A-Z]{2,12}`）而不是硬编码某个缩写。
+2. **真实姓名与本地路径全量扫**：`python3 scripts/check_desensitization.py --program <真实程序.html> <发布目录…>`，
+   必须 0 命中（exit 0）。脚本名单**直接从程序的 `STUDENT_NAMES` 读取**（所以脚本本身可以公开、不含任何真实姓名），
+   额外禁忌词放 `scripts/desensitization.local.json`（学校名/班级名/盘符目录名等，**不入库**）；
+   扫描时会**解开 `web-generator.html` 里的 base64 内嵌模板**一起查，并跳过 `legacy_ids.json`、`_skillhub_meta.json`
+   等本机专用文件。命中就 exit 1，**不许发布**。
+
+   ⚠️ **这条闸门是 2026-11-10 用一次真实事故换来的**：已公开的 GitHub 仓库里
+   `templates/class-workbench-template.html` 在某次同步时被误换成**未脱敏的本班程序**，
+   34 个真实学生姓名因此在公开仓库里躺了若干版本，而当时那套发版命令（只测功能与一致性）**全绿**。
+   教训：**功能闸门测不出隐私泄漏**——隐私必须单独一条、并且放在最前面。
+   若已提交过含真实姓名的版本，仅覆盖新文件不够，**历史提交仍然可见**，需要改写历史 + 强推；
+   这属于影响共享状态的操作，必须先征得用户同意再动手。
 3. **端到端生成**：用虚构名单跑 `customize.py` 产出示例成品，检查：班级名已写入、无 `学生01` 残留、
    两个 `<script>` 块 `node --check` 通过、CSS 括号配平。
 4. **浏览器冒烟**：加载成品，断言无 JS 错误、新功能元素在位（用 `window.__CLASS_PACK__` 探针）、

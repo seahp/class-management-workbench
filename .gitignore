@@ -18,3 +18,6 @@ scripts/legacy_ids.json
 
 # SkillHub 本地元数据（含个人路径，不入库）
 _skillhub_meta.json
+
+# 本机脱敏禁忌词清单（含学校/班级名，不入库；模板见 desensitization.example.json）
+scripts/desensitization.local.json

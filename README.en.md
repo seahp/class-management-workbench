@@ -31,7 +31,7 @@
 | 📚 Vocabulary | Built-in word bank, spaced-repetition review, colour-coded flashcards |
 | 🛠 Tools | Random picker, countdown timer |
 | 🏆 Ranking | Today / yesterday / monthly leaderboards |
-| 🎁 Reward cards | Points-to-perks card draw with album and pity system |
+| 🎁 Reward cards | Points-to-perks card draw with album; rarity-based skewed odds shown on the page, soft pity, privilege bag |
 
 **The interface is available in Chinese and English** — switch it in ⚙ Settings → 🌐 Interface language.
 (Student names, poems, rhymes and word data are never translated.)
@@ -105,6 +105,9 @@ Fonts scale with screen width (×1.8 above 2400 px), and homework font size is a
 
 ## Changelog
 
+- **v2.5.0** — Fixed a script-abort defect that silently disabled **many buttons at once** (files generated with 2.4.0 / 2.4.1 are affected — please regenerate); card-draw odds now follow a **rarity-only skewed long tail** independent of a student's point level, with a level-independent soft pity (9 SR-less draws in a row → the 10th guarantees SR+) and the real percentages shown on the page; the competition page gained a **round status badge** (not started / today +N · total / stale-score warning); the privilege bag now fits 12 cards per row and scrolls to the end; English UI completed for the card page (967 dictionary entries + 109 pattern rules); three new release gates for template drift, translation drift and desensitisation
+- **v2.4.1** — Re-packaged: ships ready-to-run HTML files (blank class + web generator), no scripting required
+- **v2.4.0** — Fixed 16 null-reference bugs; added the auto-refresh warning; seating spacing, one-tap duty points with frosted-glass animation, recitation spacing and other UI polish
 - **v2.3.1** — English UI polish: nested translation in template rules (`第1节 · 数学` → `Period 1 · Math`), team names and other missing strings added, two engine defects fixed
 - **v2.3.0** — **Chinese / English interface switching** (⚙ Settings, first item): the whole UI follows the selected language; student names, poems, rhymes, word data and editable team names are never translated
 - **v2.2.0** — Easier onboarding: added a **web generator** (zero install) and a **ready-to-use file**; built-in **❓ Having trouble?** panel; fixed timetable-season switching resetting custom timetables, and un-recoverable file-write permission failures

@@ -48,7 +48,10 @@ KEEP_FIELDS = ['name', 'display_name', 'display_name_en', 'description',
 LITE_SKIP = ('templates/ready-to-use-workbench.html',
              'templates/web-generator.html')
 
-SKIP_NAMES = {'legacy_ids.json'}
+#: 本机专用文件：含真实路径或真实学校/班级名，**绝不允许进包**
+#: （desensitization.local.json 是脱敏禁忌词清单，legacy_ids.json 是历史标识符映射，
+#:   _skillhub_meta.json 是 SkillHub 上传元数据带本地路径；三者均有 .example 或不需要随包）
+SKIP_NAMES = {'legacy_ids.json', 'desensitization.local.json', '_skillhub_meta.json'}
 
 #: 开放平台硬限制：**解压后**总大小 ≤ 3 MB（不是 zip 文件大小！）
 #: 平台报错原文："压缩包解压后超出大小限制（最大 3MB，即 3145728 字节）"

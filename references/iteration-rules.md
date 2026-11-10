@@ -57,6 +57,15 @@ python3 -c "import io,re,collections;s=io.open('班级小助手.html',encoding='
 4. **设置指纹不要计入派生字段**
    `settingsCanonicalObj()` 里若同时包含源字段与派生字段，两者不同步时会误报「设置不一致」。派生字段不进指纹。
 
+5. **新增 DOM 节点禁止放在 `<script>` 之后；顶层绑定一律守卫式**（2026-11-10 事故定案）
+   单文件应用只有 2 个顶格 `<script>` 块（717KB 逻辑 + 94KB 持久化/双语）。classic script 的顶层代码**只看得到在它之前出现的标记**，所以：
+
+   - ❌ 把新弹层/新遮罩的 HTML 追加在 `</body>` 前（那里已在脚本之后）→ 脚本里 `$('#newNode').addEventListener` 抛 `Cannot read properties of null` → **整块中断，之后所有按钮集体没绑定**
+   - ✅ 新节点插在第一块 `<script>` **之前**（贴同类节点，如 `#toast` 旁边）
+   - ✅ 绑定写成 `const el=$('#x'); if(el) el.addEventListener(...)`，跨块引用、可选节点一律守卫
+   - ⚠️ 症状极误导性：报障同学会说「导入数据包点了没反应」「下载按钮没用」「竞赛重置无效」——看起来是三件不相干的事，实际是**一处崩溃**。第一次修不好（改 `display:none`→`visibility`、加 `showOpenFilePicker`）就说明在猜，**立刻停下来抓 `window.onerror`**，不要连着改第二遍表象。
+   - 这条红线由 `scripts/smoke.cjs` 自动把关（静态「绑定早于节点」+ 运行时错误 + 顶层 `let` TDZ 三重命中），发版必跑，见 `verification.md` 1h。
+
 ## 四、样式作用域
 
 **公共按钮尺寸必须写在全局**。历史 bug：`.btn-single` / `.btn-ten` 只写了背景色，尺寸规则被写在 `.gacha-btns button` 作用域里，导致用到别处（点名、倒计时）时退回浏览器默认 28px 高。

@@ -1,20 +1,18 @@
 ---
 name: class-management-workbench
-name: class-management-workbench
 slug: class-management-workbench
+display_name: 班级管理工作台生成器
+display_name_en: Classroom Management Workbench Generator
 displayName: 班级管理工作台生成器
-display_name: 班级管理工作台生成器
-display_name_en: Classroom Management Workbench Generator
-display_name: 班级管理工作台生成器
-display_name_en: Classroom Management Workbench Generator
-summary: 一键生成班主任专用单文件离线工作台：座位表、积分榜、小组竞赛、值日、课表、作业、古诗、口算、单词卡、抽卡共 12 个模块，适配教室触摸大屏；界面支持中英文切换
-tags: [班级管理, 班主任, 座位表, 积分, 值日, 课表, 教室大屏, 教师工具, 单文件HTML, 离线, 双语]
+displayNameEn: Classroom Management Workbench Generator
 description: 为中小学班主任生成一套「班级管理工作台」单文件离线 HTML——含座位表、积分榜、小组竞赛、值日、课表、作业、古诗诵读、口算/竖式/脱式练习、英语单词记忆、随机点名与倒计时、排行榜、抽卡共 12 个模块，适配教室触摸大屏（希沃一体机等）。当用户说「做个班级小助手 / 班级管理工具 / 班级工作台」「给我班做一个座位表+积分+值日的工具」「要一个能排座位、加分、倒计时的网页」，或需要为某个具体班级（如「三年级二班 38 人」）定制班级管理页面时使用；也适用于在已有的班级小助手 HTML 上迭代修改功能。
 description_zh: 面向中小学班主任：三条路都能拿到一份双击即用的单文件离线班级管理工作台（座位、积分、竞赛、值日、课表、作业、诵读、计算、单词、工具、排行、抽卡共 12 模块）——① 让 AI 按班级信息直接生成；② 老师自己在「网页版生成器」填三步生成（零安装）；③ 直接用「空白班」文件在设置里贴名单。内置动物头像等级系统与 3480px 教室大屏适配；程序内含「❓遇到问题」通俗问答，并教老师用「绑定程序文件」防止教室还原卡清数据。
 description_en: For primary and secondary homeroom teachers, generate a ready-to-use single-file offline classroom management workbench (seating chart, points, group competition, duty roster, timetable, homework, poetry recitation, math drills, English vocabulary, random picker and countdown, leaderboard, reward cards, plus a v2.0 animal-avatar level system with 12 hand-drawn watercolor pets, star-to-level-up progression with unlimited Lv, and unified 1.8x big-screen scaling for 3480px touch displays) from a few class details, verify it in a real browser, deliver it, and teach the file-binding trick that survives classroom restore cards.
 category: education
-version: 2.4.0
+summary: 一键生成班主任专用单文件离线工作台：座位表、积分榜、小组竞赛、值日、课表、作业、古诗、口算、单词卡、抽卡共 12 个模块，适配教室触摸大屏；界面支持中英文切换
+tags: [班级管理, 班主任, 座位表, 积分, 值日, 课表, 教室大屏, 教师工具, 单文件HTML, 离线, 双语]
 homepage: https://github.com/seahp/class-management-workbench
+version: 2.5.0
 author: 粉笔与代码
 ---
 
@@ -43,7 +41,7 @@ author: 粉笔与代码
 **程序内置了「❓ 遇到问题」面板**（右上角）：12 条大白话问答，覆盖数据保存、换电脑、还原卡、换季课表等。老师提问前先让他点 ❓ 看看；更完整的一份在 `references/faq-for-teachers.md`。
 
 **界面支持中文 / English 切换**（⚙ 设置 → 第一项「🌐 界面语言」）：英文环境下可整界面切英文。
-翻译由 `scripts/add_i18n.py` 注入（读取 `scripts/i18n-en.json` 字典 + `i18n-en-patterns.json` 模板规则），
+翻译由 `scripts/add_i18n.py` 首次注入（词条来自 `scripts/i18n-en.json` 字典 + `i18n-en-patterns.json` 模板规则，**以后加词改这两个 JSON 后用 `scripts/sync_i18n.py` 同步**），
 **学生姓名、队伍名、古诗、儿歌、词库、题库等内容一律不翻译**（可编辑区域自动跳过，防止英文覆盖用户数据）。
 英文说明见仓库 `README.en.md`。
 
@@ -135,6 +133,27 @@ python3 ~/.workbuddy/skills/class-management-workbench/scripts/build_template.py
 localStorage KEY、IndexedDB 名、内嵌数据全局变量、数据脚本 id 全部改为 `class_helper_v1` / `__CLASS_*` 系），
 最后校验 customize.py 依赖的锚点是否齐全。**任何一项未命中就报错退出**，不会产出半成品模板。
 
+## 2.5.0 更新（2026-11-10）· 一处脚本中断导致多按钮集体失效 + 抽卡概率回归
+
+**本版本合并了原 2.4.2 的全部修复（未单独发布）与本轮抽卡概率改版。**
+**本次修的是缺陷，不是新功能。⚠️ 2.4.0 / 2.4.1 生成的班级都带这个缺陷，请用 2.5.0 重新生成一份。**
+
+- 现象（多位老师会遇到）：⚙ 设置里的「📦 导入数据包」、右上角「⬇ 导出换机包」、「🚀 立即生成」、竞赛页「↺ 重置比赛」等按钮**点了没有任何反应**；竞赛页看起来"还没开始就有小组加分"（其实是重置没生效）
+- 根因：值日加分动画的弹层节点被插在两个 `<script>` 块**之后**，脚本顶层对它绑定事件时拿到 `null` 抛错 → **整块 717KB 脚本从那一刻中断**，之后定义的所有按钮绑定全部丢失
+- 修复：弹层节点移到脚本块之前 + 绑定改成守卫式（`const el=$('#x'); if(el) el.addEventListener(...)`）
+- 新增发版闸门 `scripts/smoke.cjs`（见 `references/verification.md` 1h）：静态查「绑定早于节点」、运行时抓 `window.onerror`、用顶层 `let` 的 TDZ 判定脚本是否被中断；退出码非 0 不发版
+- 模板、`templates/ready-to-use-workbench.html`（空白班）、`templates/web-generator.html`（网页版生成器）三处产物均已用修复后的模板重建，逐字节校验一致
+- 🆕 竞赛页新增**轮次语义**：工具栏多一枚状态牌（`⏸ 本轮未开始` / `🚀 今日 +N · 累计 M 分` / 红框 `⚠️ 有往日残留分数`、`⚠️ 已 N 天未开新一轮`），「重置比赛」改名为「🆕 开始新一轮」（清分数 + 清完成记录 + 清今天的 `pkDaily` 账本 + 记 `pk.roundStart`）。解决"跨天残留分数让人误以为没开始就有分"——现在页面自己会说清楚
+- 🎒 抽卡页**权益背包**改版：单卡从 297×379 缩到 274×162（面积约为原来四成），一行固定 12 张；卡名省略号截断、说明最多两行，「使用」按钮仍保留 52px 触摸高度不缩水。同时修掉"下面的卡滚不出来"——`#gachaPriv` 原本写死 `height:35vh; overflow:hidden`，在它自己的滚动容器里又裁了一刀，39 张卡时有 27 张被切掉且滚不到；改为交给 `.gacha-bottom-scroll` 统一滚动后，滚到底末卡完整可见
+
+- 🔤 **抽卡页英文界面补词**（+17 条字典 + 9 条模板规则）：`使用`、`宠物收藏`、`🎒 权益背包`、`🎒 权益 / 🏅 等级`、`🎲 单抽 / 🎁 十连`、`⚡ 保底`、`已收集 A/B 张（N%）`、`🎒 X 的权益背包（N 张）`、空背包提示、`NN 姓名（N分）`选项等。**卡片名/说明与学生姓名仍按设计保留中文**。加上本轮概率改版的文案，英文词条现共 **967 条字典 + 109 条模板规则**（唯一来源 `scripts/i18n-en.json` / `i18n-en-patterns.json`）
+- 🛡 **新增两道防漂移闸门**：`scripts/check_template_drift.py`（模板必须等于程序重新脱敏的结果，2026-11-10 发现模板已悄悄落后本班程序 **36 个代码块**）与 `scripts/sync_i18n.py`（英文词条以两个 JSON 为唯一来源，`--check` 可当闸门）。发版命令由 3 条增至 5 条，见 `references/verification.md` 1h/1i
+- 🎲 **抽卡概率回归「只看稀有度」的偏态长尾**：原先积分等级会**改写概率**——`gachaFloor()` 按等级发"保底档"，等级越高的学生 N/R 卡被一路顶成 SR，实测 Lv21 学生 SR+ 高达 98%、几乎抽不到 N 卡，与"越稀有越难抽"相反。现在删掉 `gachaFloor`/`applyFloor`，每次抽都按 `rarityWeight`（N 60 / R 27 / SR 10 / SSR 3）加权，**与各人等级无关**（800 抽 × Lv1/3/5/21 实测 SR+ 极差仅 1.6 个百分点，四档仍单调递减）
+- ⚡ **保底改成与等级无关的「软保底」**：`state.pity[学生id]` 只记录**连黑次数**，连续 9 次没出 SR 及以上 → 第 10 次必出 SR/SSR（全班公共池记在 `-1`），十连仍保留"最多 1 张 SSR"上限。**Why:** 孩子连黑十几次会直接放弃抽卡，体验需要兜底，但兜底不能靠"等级高就发好卡"这种惩罚努力的反向激励。**How to apply:** 计数器跟着 `save()` 与换机包走，老存档缺 `state.pity` 时由 `draw()` 惰性补齐（首启/迁移两条路都要跑）；要调"兜底快慢"只改 `GACHA_PITY_SR`
+- 👀 **概率写在明面上**：抽卡页信息条原来那枚 `⚡ 保底 SR SSR`（描述的是已经不存在的机制）换成 `⚡ 概率 N 56% R 32% SR 9.4% SSR 2.0%`，由 `rarityWeight` 实时算出——改权重不用改文案；旁边一枚 `⚡ 连黑 8/9 · 再抽 2 次必出 SR`，只剩 2 次时红底高亮，悬浮说明写明"与积分等级无关"
+- 🕵️ **新增脱敏闸门 `scripts/check_desensitization.py`**：发版前扫描发布目录里的真实学生/学校/老师姓名与本地路径（`/Users/<真实名>/`、`/Volumes/<真实名>/`、`C:\Users\<真实名>\`），并**解开网页版生成器里的 base64 模板**一起扫；命中即退出码 1，**不许发布**。名单直接从程序的 `STUDENT_NAMES` 读取（脚本自身不带名单），额外禁忌词放 `scripts/desensitization.local.json`（已进 `.gitignore`，不要提交）。**Why:** 本轮排查发现已公开的 GitHub 仓库里 `templates/class-workbench-template.html` 被误换成了**未脱敏的本班程序**（含 34 个真实学生姓名），而此前 5 条发版命令全都查不出来——它只测功能，不测隐私。**How to apply:** 发版命令由 5 条增至 6 条，脱敏扫描必须**先于**冒烟与等价性通过
+- 🔑 **存储标识符里的校名缩写全部清出发布物**：母版程序的 localStorage 键名、两个 IndexedDB 库名、sessionStorage 标记、内嵌数据 `<script>` 的 id 与 `window.__×××_EMBEDDED_STATE__` 等 5 个全局变量前缀，历史上都带本校缩写；而 `build_template.py` 的「历史标识符替换」一步在 `scripts/legacy_ids.json` **缺失时只会静默跳过**，于是这些缩写着连续几个版本原样出门（v2.4.0 的已上架包里就有）。现在：① 建好本机专用（不入库）的 `scripts/legacy_ids.json`，7 条映射一次替换 42 处；② 跨版本读取的前缀改成字符类 `[A-Z]{2,12}`（不再硬编码缩写，`parseMigPack` 与换机包识别同步改）；③ 脱敏闸门把缩写列为西文禁词（先抹 base64 噪声再按标识符边界匹配，避免在头像图片的随机字符里假命中）。**本机程序一个键名都没改**——改了会丢本班数据与已绑定的文件句柄，脱敏只发生在生成模板时
+
 ## 2.3.1 更新（2026-10-15）· 英文界面质量完善
 
 1. 🔤 **模板规则支持嵌套翻译**（`$Dn`）：如「第1节 · 数学」→ `Period 1 · Math`（此前课程名会残留中文）
@@ -193,18 +212,25 @@ localStorage KEY、IndexedDB 名、内嵌数据全局变量、数据脚本 id �
 - `templates/web-generator.html` — **网页版生成器**（含内嵌模板，双击即用；由 `scripts/build_web_generator.py` 从模板构建；★ 若包内未随附，跑该脚本即可现场生成，功能完全等价）
 - `templates/ready-to-use-workbench.html` — **空白班**现成文件（40 个占位名，老师贴名单即用；★ 若包内未随附，用 `scripts/customize.py --count 40` 现场生成，功能完全等价）
 - `references/faq-for-teachers.md` — 给老师的通俗问答（与程序内 ❓ 面板同源）
-- `scripts/i18n-en.json` + `scripts/i18n-en-patterns.json` — **界面英文字典**（946 条精确匹配 + 94 条模板规则）
-- `scripts/add_i18n.py` — 把中英文切换注入程序（构建链的一环，改完主程序后按顺序跑：build_template → build_web_generator → customize）
+- `scripts/i18n-en.json` + `scripts/i18n-en-patterns.json` — **界面英文词条的唯一来源**（967 条精确匹配 + 109 条模板规则）；程序与模板里内嵌的 `I18N_DICT` / `I18N_PAT` 只是它的副本，**改词条只改这两个 JSON**，再跑 `sync_i18n.py`
+- `scripts/add_i18n.py` — 把中英文切换**首次注入**程序（一次性：检测到 `applyLang` 就拒绝再跑）
+- `scripts/sync_i18n.py` — **防漂移闸门**：把两个 JSON 同步进程序/模板（`--check` 只报告）。字典按键值语义比、模板规则按字节比（顺序即语义）
+- `scripts/check_template_drift.py` — **防漂移闸门**：现场重算模板并逐字节比对，报告程序与模板的差异块（`--fix` 重建）。模板只许由 `build_template.py` 生成，不许手抄
 - `templates/class-workbench-template.html` — 脱敏后的程序模板（约 910 KB，2.0 起内嵌 12 张动物头像，无任何真实学生/学校信息）
 - `scripts/customize.py` — 按班级信息定制模板（生成成品）
 - `scripts/build_template.py` — 反向：把真实程序脱敏成模板（含自检）
+- `scripts/check_desensitization.py` — **脱敏闸门**：扫描发布目录里的真实姓名与本地路径（含 base64 内嵌模板），命中即非 0 退出。`--program 班级小助手.html 目录…`；名单从程序读取，禁忌词另存 `desensitization.local.json`（不提交）
 - `references/customize-params.md` — 脚本参数与名单/课表格式
 - `references/modules.md` — 12 个模块的功能、数据结构、关键函数
 - `references/iteration-rules.md` — 修改该文件的安全纪律（必读）
 - `references/verification.md` — 浏览器验证与量测方法
+- `scripts/smoke.cjs` — **发版闸门**：`node scripts/smoke.cjs 程序.html`，静态+运行时双重扫描（绑定顺序 / 未捕获错误 / 脚本中断 / 全量点击），退出码非 0 不许发版（见 verification.md 1h）
 
 ## 隐私红线
 
 - 模板与技能包内**不得出现任何真实学生姓名、学校名、教师姓名**
+- **发版前必须跑 `python3 scripts/check_desensitization.py --program 班级小助手.html <发布目录…>`，0 命中才允许出门**（它同时扫 base64 内嵌模板；命中即 exit 1）
+- `scripts/desensitization.local.json`（本机禁忌词清单）**不入库、不进包**；`_skillhub_meta.json`、`scripts/legacy_ids.json` 同理
 - 分发给其他老师前，确认名单已替换、localStorage/全局变量名不含学校缩写
 - 老师自己的名单只存在他本机浏览器里，不外传
+- ⚠️ 真实姓名一旦被提交进公开仓库，**覆盖文件不等于撤回**——历史提交仍然可见，需改写历史 + 强推，且要先征得用户同意
